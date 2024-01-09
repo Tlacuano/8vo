@@ -1,0 +1,20 @@
+
+:root{
+    --background-navbar: #e52592;
+    --color-navbar: #fff;
+}
+.styles-navbar{
+    background-color: var(--background-navbar) !important;
+    color: var(--color-navbar) !important;
+}
+
+.styles-navbar .b-icon{
+    color: var(--color-navbar) !important;
+}
+
+.selectable {
+    cursor: pointer;
+}
+
+
+
