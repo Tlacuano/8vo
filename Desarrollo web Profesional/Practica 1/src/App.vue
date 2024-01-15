@@ -18,21 +18,21 @@
               
               <b-nav vertical >
                 <b-nav-item class="selecteable mt-3" :to="{ name: 'ReservasDeVuelos' }"
-                  ><b-link >
+                  ><b-link :to="{ name: 'ReservasDeVuelos' }" >
                     <b-icon icon="calendar-check" aria-hidden="true" class="mr-2"></b-icon>
                     Reservas
                     </b-link>
                 </b-nav-item>
 
                 <b-nav-item class="selecteable" :to="{ name: 'VuelosDisponibles' }"
-                  ><b-link >
+                  ><b-link :to="{ name: 'VuelosDisponibles' }">
                     <b-icon icon="cursor" aria-hidden="true" class="mr-2"></b-icon>
                     Vuelos disponibles
                     </b-link>
                 </b-nav-item>
 
                 <b-nav-item class="selecteable" :to="{ name: 'VuelosCancelados' }"
-                  ><b-link >
+                  ><b-link :to="{ name: 'VuelosCancelados' }">
                     <b-icon icon="folder-x" aria-hidden="true" class="mr-2"></b-icon>
                     Vuelos cancelados
                     </b-link>
@@ -42,8 +42,9 @@
         </b-col>
 
         
-        <b-col lg="10" cols="12" :class="buttonSidebar ? '' : 'pl-5'">
-          <b-container fluid>
+        <b-col :lg="buttonSidebar ? '' : '10'" :class="buttonSidebar ? '' : 'pl-5'">
+          
+            
             <b-nav>
               <b-nav-item active @click="isVisibleSidebar = !isVisibleSidebar"> 
                 <b-icon
@@ -59,10 +60,10 @@
               <b-nav-item>Link</b-nav-item>
               <b-nav-item>Another Link</b-nav-item>
             </b-nav>
-          
             
-            <router-view :class="buttonSidebar ? '' : 'pl-5'"/>
-          </b-container>
+            
+            <router-view class="mt-3" :class="buttonSidebar ? '' : 'pl-5'"/>
+          
         </b-col>
       </b-row>
     </b-container>
