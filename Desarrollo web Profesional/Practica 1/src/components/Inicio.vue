@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <b-container fluid>
         holaa
-    </div>
+    </b-container>
 </template>
 
 <script>
