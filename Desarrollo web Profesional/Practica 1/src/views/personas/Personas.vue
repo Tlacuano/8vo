@@ -15,7 +15,7 @@
                     :per-page="perPage"
                     :sort-by.sync="sortBy"
                 >
-                    <template v-slot:cell(actions)="data">
+                    <template >
                         <b-row no-gutters>
                             <b-col>
                                 <b-button variant="primary" size="sm">Editar</b-button>

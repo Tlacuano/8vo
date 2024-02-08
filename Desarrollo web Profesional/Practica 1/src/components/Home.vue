@@ -51,6 +51,13 @@
                       Gestion de Personas
                       </b-link>
                   </b-nav-item>
+
+                  <b-nav-item class="selecteable" :to="{ name: 'libros' }"
+                    ><b-link :to="{ name: 'libros' }">
+                      <b-icon icon="book" aria-hidden="true" class="mr-2"></b-icon>
+                      Gestion de Libros
+                      </b-link>
+                  </b-nav-item>
                 </b-nav>      
             </b-sidebar>
           </b-col>
