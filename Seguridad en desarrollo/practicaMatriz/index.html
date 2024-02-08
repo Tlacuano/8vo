@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+    <style>
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+    <!--
+        @autor: Jose Emilio ENriquez Torres
+    -->
+    <h1>Asegurando la matriz</h1>
+
+    <label for="coord-x">Coordenada x</label>
+    <input type="number" id="coord-x"></input>
+    <br/>
+    <label for="coord-y">Coordenada y</label>
+    <input type="number" id="coord-y"></input>
+    <br/>
+    <label for="tiempo">Tiempo (s)</label>
+    <input type="number" id="tiempo"></input>
+    <br/>
+    <label for="cuadros">Cuadros</label>
+    <input type="number" id="cuadros"></input>
+    <br/>
+    <button onclick="verificar()">Check</button>
+
+    <hr>
+    <div id="contenedorMatriz"></div>
+
+
+    <script>
+        let matriz = []
+        let iniciado = false
+        
+        function generarCoordenadasAleatorios(cuantosRandoms, limX, limY){
+            let coordenadasAleatorias = [];
+
+            for (let i = 0; i < cuantosRandoms; i++) {
+                let coordenadaX = Math.floor(Math.random() * limX + 1);
+                let coordenadaY = Math.floor(Math.random() * limY + 1);
+
+                coordenadasAleatorias.push({ x: coordenadaX - 1, y: coordenadaY - 1});
+            }
+
+            return coordenadasAleatorias;
+
+        }
+
+        function pintarTabla(matriz, x, y, tiempo, cuadros){
+            const contenedor_matriz = document.getElementById("contenedorMatriz");
+            const numerosRandoms = generarCoordenadasAleatorios(cuadros, x, y)
+            
+            let tabla = '<table>'
+            
+            
+            //verificar que los cuadros a pintar no esten pintados
+            let validorCambio = true
+
+            for(let i = 0; i < numerosRandoms.length; i++){
+                validorCambio = validorCambio && matriz[numerosRandoms[i].x][numerosRandoms[i].y] == 0
+            }
+            
+            //si es valido cambiar a 1 las coordenadas
+            if(validorCambio){
+                for(let i = 0; i < numerosRandoms.length; i++){
+                    matriz[numerosRandoms[i].x][numerosRandoms[i].y] = 1  
+                }
+            }
+
+
+            //mostrar talba. las coordenadas que esten en 1 se pintaran de rojo
+            for (let i = 0; i < x; i++) {
+                tabla += '<tr>'
+                for (let j = 0; j < y; j++) {
+                    if(matriz[i][j] == 1){
+                        tabla += '<td style="background-color: red;">' + matriz[i][j] + '</td>'
+                    }else{
+                        tabla += '<td>' + matriz[i][j] + '</td>'
+                    }
+                }
+                tabla += '</tr>'
+            }
+            tabla += '</table>'
+
+            contenedor_matriz.innerHTML = tabla
+
+
+            setTimeout(() => {
+                pintarTabla(matriz, x, y, tiempo, cuadros)
+            },  tiempo * 1000);
+
+        }
+
+
+        function verificar(){
+            let coord_x = document.getElementById("coord-x").value
+            let coord_y = document.getElementById("coord-y").value
+            let tiempo = document.getElementById("tiempo").value
+            let cuadros = document.getElementById("cuadros").value
+
+            let errores = new Map();
+
+            
+            if(!iniciado){
+                iniciado = true
+                //validar los campos
+                //validar coordenada x individualmente
+                if(coord_x){
+                    try {
+                        coord_x = Number(coord_x)
+                        if(Number.isInteger(coord_x)){
+                            if(coord_x > 0 && coord_x < 101){
+                                errores.set("coord_x", false)
+    
+                            }else{
+                                alert("El campo de la coordenada X debe ser entre 1 y 100")
+                                errores.set("coord_x", true)
+                            }
+                        }else{
+                            alert("El campo de la coordenada X debe ser un numero entero")
+                            errores.set("coord_x", true)
+                        }
+                    } catch (error) {
+                        alert("El campo de la coordenada X debe ser un numero")
+                        errores.set("coord_x", true)
+                    }
+                }else{
+                    alert("El campo de la coordenada X no puede estar vacio o contener caracteres especiales")
+                    errores.set("coord_x", true)
+                }
+    
+                //validar coordenada y individualmente
+                if(coord_y){
+                    try {
+                        coord_y = Number(coord_y)
+                        if(Number.isInteger(coord_y)){
+                            if(coord_y > 0 && coord_y <= 100){
+                                errores.set("coord_y", false)
+    
+                            }else{
+                                alert("El campo de la coordenada Y debe ser entre 1 y 100")
+                                errores.set("coord_y", true)
+                            }
+                        }else{
+                            alert("El campo de la coordenada Y debe ser un numero entero")
+                            errores.set("coord_y", true)
+                        }
+                    } catch (error) {
+                        alert("El campo de la coordenada Y debe ser un numero")
+                        errores.set("coord_y", true)
+                    }
+                }else{
+                    alert("El campo de la coordenada Y no puede estar vacio o contener caracteres especiales")
+                    errores.set("coord_y", true)
+                }
+    
+                //validar tiempo individualmente
+                if(tiempo){
+                    try {
+                        tiempo = Number(tiempo)
+                        if(Number.isInteger(tiempo)){
+                            if(tiempo > 0){
+                                errores.set("tiempo", false)
+    
+                            }else{
+                                alert("El campo del tiempo debe ser mayor a 0")
+                                errores.set("tiempo", true)
+                            }
+                        }else{
+                            alert("El campo del tiempo debe ser un numero entero")
+                            errores.set("tiempo", true)
+                        }
+                    } catch (error) {
+                        alert("El campo del tiempo debe ser un numero")
+                        errores.set("tiempo", true)
+                    }
+                }else{
+                    alert("El campo del tiempo no puede estar vacio o contener caracteres especiales")
+                    errores.set("tiempo", true)
+                }
+    
+                //validar cuadros individualmente
+                if(cuadros){
+                    try {
+                        cuadros = Number(cuadros)
+                        if(Number.isInteger(cuadros)){
+                            if(cuadros > 0){
+                                errores.set("cuadros", false)
+    
+                            }else{
+                                alert("El campo de los cuadros debe ser mayor a 0")
+                                errores.set("cuadros", true)
+                            }
+                        }else{
+                            alert("El campo de los cuadros debe ser un numero entero")
+                            errores.set("cuadros", true)
+                        }
+                    } catch (error) {
+                        alert("El campo de los cuadros debe ser un numero")
+                        errores.set("cuadros", true)
+                    }
+                }else{
+                    alert("El campo de los cuadros no puede estar vacio o contener caracteres especiales")
+                    errores.set("cuadros", true)
+                }
+    
+                //validar otros posibles errores
+                if(coord_x * coord_y <= cuadros){
+                    alert("El numero de cuadros no puede ser mayor o igual a la cantidad de cuadros que tiene la matriz")
+                    errores.set("cuadros", true)
+                }
+    
+                if(coord_x * coord_y % cuadros != 0){
+                    alert("El numero de cuadros debe ser multiplo de la cantidad de cuadros que tiene la matriz")
+                    errores.set("cuadros", true)
+                }
+                    
+    
+    
+                //validar errores
+                if(
+                    !errores.get("coord_x") &&
+                    !errores.get("coord_y") &&
+                    !errores.get("tiempo") &&
+                    !errores.get("cuadros")
+                ){
+                    //crear matriz
+    
+                    for (let i = 0; i < coord_x; i++) {
+                        matriz[i] = [];
+                        for (let j = 0; j < coord_y; j++) {
+                            matriz[i][j] = 0;
+                        }
+                    }
+    
+                    pintarTabla(matriz, coord_x, coord_y, tiempo, cuadros)
+                    
+                }
+            }else{
+                alert("No se puede iniciar otra vez")
+            }
+        }
+
+    </script>
+</body>
+</html>

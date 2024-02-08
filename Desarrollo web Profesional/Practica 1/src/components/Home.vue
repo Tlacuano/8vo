@@ -44,6 +44,13 @@
                       Formulario
                       </b-link>
                   </b-nav-item>
+
+                  <b-nav-item class="selecteable" :to="{ name: 'Personas' }"
+                    ><b-link :to="{ name: 'Personas' }">
+                      <b-icon icon="person" aria-hidden="true" class="mr-2"></b-icon>
+                      Gestion de Personas
+                      </b-link>
+                  </b-nav-item>
                 </b-nav>      
             </b-sidebar>
           </b-col>

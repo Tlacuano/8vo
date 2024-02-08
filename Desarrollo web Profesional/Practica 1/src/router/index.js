@@ -24,7 +24,11 @@ const routes  = [
                         name: 'formulario',
                         component: () => import('../views/formulario/Formulario.vue')
                     },
-
+                    {
+                        path:'/Personas',
+                        name: 'Personas',
+                        component: () => import('../views/personas/Personas.vue')
+                    },
                     {
                         path:'/ReservasDeVuelos',
                         name: 'ReservasDeVuelos',
