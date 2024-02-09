@@ -14,16 +14,16 @@
                     <b-button v-b-modal.InsertBookModal variant="dark">Registrar</b-button>
                 </b-col>
             </b-row>
-            <b-row align-v="between" class="my-5">
+            <b-row align-v="between" class="mb-3">
                 <b-col cols="4" v-for="libro in libros" :key="libro.id">
                     <b-card class="mt-2">
                         <b-row>
                             <b-col class="text-right p-0 m-0">
-                                <b-dropdown variant="link-dark">
+                                <b-dropdown variant="link-dark" toggle-class="text-decoration-none" no-caret>
                                     <template v-slot:button-content>
                                         <b-icon icon="three-dots"></b-icon>
                                     </template>
-                                    <b-dropdown-item>Editar</b-dropdown-item>
+                                    <b-dropdown-item @click="updateLibro(libro)">Editar</b-dropdown-item>
                                     <b-dropdown-item @click="deleteLibro(libro)">Eliminar</b-dropdown-item>
                                 </b-dropdown>
                             </b-col>
@@ -74,6 +74,7 @@
         </b-container>
 
         <InsertBookModal/>
+        <updateLibroModal :libro="currentLibro"/>
     </div>
 </template>
 
@@ -83,7 +84,8 @@ import axios from 'axios'
 export default {
     name: 'boocks_management',
     components: {
-        InsertBookModal: () => import('./Insert_book_Modal.vue')
+        InsertBookModal: () => import('./Insert_book_Modal.vue'),
+        updateLibroModal: () => import('./update_book_Modal.vue')
     },
     data () {
         return {
@@ -95,7 +97,9 @@ export default {
             currentPage: 1,
             totalRows: 0,
 
-            libros: []
+            libros: [],
+
+            currentLibro: {}
         }
     },
     methods: {
@@ -104,7 +108,7 @@ export default {
             try {
                 const page = this.currentPage - 1
 
-                const response = await axios.get(`http://localhost:8080/api/libros/getAll?_page=${page}&_limit=${this.perPage}`)
+                const response = await axios.get(`http://localhost:8080/api/libros/getAll?page=${page}&size=${this.perPage}`)
                 
                 this.libros = response.data.content;
                 this.totalRows = response.data.totalElements
@@ -123,6 +127,11 @@ export default {
             } catch (error) {
                 console.log(error)
             }
+        },
+
+        updateLibro(lbro){
+            this.currentLibro = lbro
+            this.$bvModal.show('updateLibroModal')
         },
 
 
