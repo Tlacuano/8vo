@@ -61,6 +61,7 @@ export default {
                 this.spinnerHandler()
                 this.$emit('updateLibro', this.libro)
                 this.$bvModal.hide('updateLibroModal')
+                window.location.reload()
                 
 
             } catch (error) {

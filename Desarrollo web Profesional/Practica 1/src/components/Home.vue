@@ -64,27 +64,7 @@
   
           
           <b-col :lg="buttonSidebar ? '' : '10'" :class="buttonSidebar ? '' : 'pl-5'">
-            
-              
-              <b-nav>
-                <b-nav-item active @click="isVisibleSidebar = !isVisibleSidebar"> 
-                  <b-icon
-                    v-if="buttonSidebar"
-                    class="selectable" 
-                    icon="list" 
-                    
-                    aria-hidden="true"
-                    />
-                </b-nav-item>
-                <b-nav-item active :to="{name:'home'}">Inicio</b-nav-item>
-                <b-nav-item active>Active</b-nav-item>
-                <b-nav-item>Link</b-nav-item>
-                <b-nav-item>Another Link</b-nav-item>
-              </b-nav>
-              
-              
-              <router-view class="mt-3" :class="buttonSidebar ? '' : 'pl-5'"/>
-            
+            <router-view class="mt-3" :class="buttonSidebar ? '' : 'pl-5'"/>
           </b-col>
         </b-row>
       </b-container>
