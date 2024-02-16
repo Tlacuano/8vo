@@ -9,7 +9,56 @@
                     <h1>Libros</h1>
                 </b-col>
             </b-row>
-            <b-row align-h="between" class="mt-4" >
+            <b-row>
+                <b-col>
+                    <h4>Registro chido:</h4>
+                </b-col>
+                <b-col class="text-right">
+                    <b-button @click="crearCard()" variant="dark">Registrar</b-button>
+                </b-col>
+            </b-row>
+            <b-row class="mb-3 pb-2 pt-2 container-books">
+                
+
+                <b-col cols="4" v-for="libro in librosARegistrar" :key="libro.id">
+                    <b-card>
+                        <b-row>
+                            <b-col>
+                                <b-form-group>
+                                    <b-form-input v-model="libro.titulo" type="text" placeholder="Ingrese el titulo del libro"></b-form-input>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
+                                <b-form-group >
+                                    <b-form-input v-model="libro.autor" type="text" placeholder="Ingrese el autor del libro"></b-form-input>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
+                                <b-form-group>
+                                    <b-form-input v-model="libro.genero" type="text" placeholder="Ingrese el genero del libro"></b-form-input>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
+                                <b-form-group >
+                                    <b-form-input v-model="libro.fechaPublicacion" type="date" placeholder="Ingrese la fecha de publicación del libro"></b-form-input>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                    </b-card>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <h4>Resgistrados:</h4>
+                </b-col>
+            </b-row>
+            <b-row align-h="between" class="mt-1" >
                 <b-col cols="12" md="7" lg="7"  v-if="busqueda.filtro != 3 && busqueda.filtro != 4 && busqueda.filtro != 5">
                     <b-form-group>
                         <b-form-input v-model="busqueda.entrada" type="text" placeholder="Buscar..." @input="searchLibro()"></b-form-input>
@@ -55,10 +104,9 @@
                     <b-button v-b-modal.InsertBookModal variant="dark">Registrar</b-button>
                 </b-col>
             </b-row>
-            <b-row align-h="between" class="mb-3">
+            <b-row align-h="between" class="mb-3 pb-3 pt-1 container-books">
                 <b-col cols="4" v-for="libro in libros" :key="libro.id">
                     <b-card class="mt-2">
-
                         <b-row>
                             <b-col>
                                 <div>
@@ -109,6 +157,16 @@
                         aria-controls="my-table"
                     ></b-pagination>
                 </b-col>
+                <b-col cols="auto">
+                    <b-form-group label="mostrar:">
+                        <b-form-select v-model="perPage" @change="perPageHandler()">
+                            <b-form-select-option value="6">6</b-form-select-option>
+                            <b-form-select-option value="12">12</b-form-select-option>
+                            <b-form-select-option value="24">24</b-form-select-option>
+                            <b-form-select-option value="48">48</b-form-select-option>
+                        </b-form-select>
+                    </b-form-group>
+                </b-col>
             </b-row>
         </b-container>
 
@@ -124,7 +182,7 @@ export default {
     name: 'boocks_management',
     components: {
         InsertBookModal: () => import('./Insert_book_Modal.vue'),
-        updateLibroModal: () => import('./update_book_Modal.vue')
+        updateLibroModal: () => import('./update_book_Modal.vue'),
     },
     data () {
         return {
@@ -140,6 +198,10 @@ export default {
             libros: [],
             generos: [],
 
+            librosARegistrar: [
+
+            ],
+
             currentLibro: {},
 
             //busqueda
@@ -153,7 +215,7 @@ export default {
         }
     },
     methods: {
-
+        //funciones que se ejecutan al inicio
         async getLibros(){
             try {
                 const page = this.currentPage - 1
@@ -166,7 +228,30 @@ export default {
                 
             }
         },
+        async getGeneros(){
+            try {
+                const response = await axios.get(`http://localhost:8080/api/libros/getGenero`)
+                this.generos = response.data
+            } catch (error) {
+                console.log(error)
+            }
+        },
 
+        //funciones para el registro chido
+        crearCard(){
+            this.librosARegistrar.push({
+                id: this.librosARegistrar.length,
+                titulo: '',
+                autor: '',
+                genero: '',
+                fechaPublicacion: ''
+            })
+        },
+
+        
+
+
+        //funciones para el crud normal
         async deleteLibro(lbro){
             try {
                 this.spinnerHandler()
@@ -183,6 +268,7 @@ export default {
             this.$bvModal.show('updateLibroModal')
         },
 
+        //funciones para la busqueda y paginacion
         async searchLibro(){
             try {
                 this.spinnerHandler()
@@ -272,15 +358,6 @@ export default {
             }
         },
 
-        async getGeneros(){
-            try {
-                const response = await axios.get(`http://localhost:8080/api/libros/getGenero`)
-                this.generos = response.data
-            } catch (error) {
-                console.log(error)
-            }
-        },
-
         cleanSearch(){
             this.busqueda.entrada = ''
             this.busqueda.genero = ''
@@ -292,10 +369,16 @@ export default {
             }
         },
 
+        perPageHandler(){
+            this.resetPagination()
+            this.searchLibro()
+        },
+
         resetPagination(){
             this.currentPage = 1
         },
 
+        //manejadores de estado
         spinnerHandler(){
             this.showSpinner = !this.showSpinner
         }
@@ -318,6 +401,19 @@ export default {
     color: #fff;
     background-color: #343a40;
     border-color: 343a40;
+}
+.container-books{
+    background-color: #f9fafb;
+}
+
+.add-book-card{
+    aspect-ratio: 1 / 1;
+}
+
+.add-book-card:hover{
+    background-color: #ededed;
+    color: #56595b;
+    
 }
 
 </style>
