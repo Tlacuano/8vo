@@ -17,11 +17,11 @@
                     <b-button @click="crearCard()" variant="dark">Registrar</b-button>
                 </b-col>
             </b-row>
-            <b-row class="mb-3 pb-2 pt-2 container-books">
+            <b-row class="mb-3 pb-2 pt-2 ">
                 
 
                 <b-col cols="4" v-for="libro in librosARegistrar" :key="libro.id">
-                    <b-card>
+                    <b-card draggable="true" @dragstart="handleDragStart($event, libro)">
                         <b-row>
                             <b-col>
                                 <b-form-group>
@@ -104,7 +104,11 @@
                     <b-button v-b-modal.InsertBookModal variant="dark">Registrar</b-button>
                 </b-col>
             </b-row>
-            <b-row align-h="between" class="mb-3 pb-3 pt-1 container-books">
+            <b-row  class="mb-3 pb-3 pt-1 container-books"
+                @drop="dropHandler($event)"
+                @dragover.prevent
+                @dragenter.prevent
+            >
                 <b-col cols="4" v-for="libro in libros" :key="libro.id">
                     <b-card class="mt-2">
                         <b-row>
@@ -160,7 +164,7 @@
                 <b-col cols="auto">
                     <b-form-group label="mostrar:">
                         <b-form-select v-model="perPage" @change="perPageHandler()">
-                            <b-form-select-option value="6">6</b-form-select-option>
+                            <b-form-select-option value="9">9</b-form-select-option>
                             <b-form-select-option value="12">12</b-form-select-option>
                             <b-form-select-option value="24">24</b-form-select-option>
                             <b-form-select-option value="48">48</b-form-select-option>
@@ -190,7 +194,7 @@ export default {
             showSpinner: false,
 
             //paginador
-            perPage: 6,
+            perPage: 9,
             currentPage: 1,
             totalRows: 0,
 
@@ -248,6 +252,39 @@ export default {
             })
         },
 
+
+        //funciones para el drag and drop
+
+        //activa el estado move y guarda el id del item que se esta moviendo
+        handleDragStart(evt, item) {
+            evt.dataTransfer.dropEffect = "move";
+            evt.dataTransfer.effectAllowed = "move";
+            evt.dataTransfer.setData("itemID", item.id);
+        },
+
+        async dropHandler(evt) {
+            evt.preventDefault();
+            const itemID = evt.dataTransfer.getData("itemID");
+            
+            const item = this.librosARegistrar.find(item => item.id == itemID);
+            
+            this.spinnerHandler()
+            try {
+                //quitar el id del item
+                item.id = undefined
+                const response = await axios.post('http://localhost:8080/api/libros/save', item)
+                //quitamos de la lista de libros a registrar el libro que se acaba de registrar
+                this.librosARegistrar = this.librosARegistrar.filter(libro => libro.id != itemID)
+                
+
+                this.searchLibro()
+
+            } catch (error) {
+                console.log(error)
+            }finally{
+                this.spinnerHandler()
+            }
+        },
         
 
 
@@ -404,6 +441,7 @@ export default {
 }
 .container-books{
     background-color: #f9fafb;
+    min-height: 50vh;
 }
 
 .add-book-card{
