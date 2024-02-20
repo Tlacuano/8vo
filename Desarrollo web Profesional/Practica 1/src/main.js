@@ -14,6 +14,10 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 
+//importacion de animaciones
+import 'animate.css';
+
+
 
 
 

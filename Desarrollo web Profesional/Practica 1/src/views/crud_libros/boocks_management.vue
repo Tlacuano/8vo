@@ -9,48 +9,52 @@
                     <h1>Libros</h1>
                 </b-col>
             </b-row>
-            <b-row>
+            <b-row v-show="showInsertSection" id="registro-chido">
                 <b-col>
-                    <h4>Registro chido:</h4>
-                </b-col>
-                <b-col class="text-right">
-                    <b-button @click="crearCard()" variant="dark">Registrar</b-button>
-                </b-col>
-            </b-row>
-            <b-row class="mb-3 pb-2 pt-2 ">
-                
-
-                <b-col cols="4" v-for="libro in librosARegistrar" :key="libro.id">
-                    <b-card draggable="true" @dragstart="handleDragStart($event, libro)">
-                        <b-row>
-                            <b-col>
-                                <b-form-group>
-                                    <b-form-input v-model="libro.titulo" type="text" placeholder="Ingrese el titulo del libro"></b-form-input>
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                        <b-row>
-                            <b-col>
-                                <b-form-group >
-                                    <b-form-input v-model="libro.autor" type="text" placeholder="Ingrese el autor del libro"></b-form-input>
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                        <b-row>
-                            <b-col>
-                                <b-form-group>
-                                    <b-form-input v-model="libro.genero" type="text" placeholder="Ingrese el genero del libro"></b-form-input>
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                        <b-row>
-                            <b-col>
-                                <b-form-group >
-                                    <b-form-input v-model="libro.fechaPublicacion" type="date" placeholder="Ingrese la fecha de publicación del libro"></b-form-input>
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                    </b-card>
+                    <b-row>
+                        <b-col>
+                            <h4>Registro chido:</h4>
+                        </b-col>
+                        <b-col class="text-right">
+                            <b-button @click="crearCard()" variant="dark">Registrar</b-button>
+                        </b-col>
+                    </b-row>
+                    <b-row class="mb-3 pb-2 pt-2 ">
+                        
+        
+                        <b-col cols="4" v-for="libro in librosARegistrar" :key="libro.id">
+                            <b-card draggable="true" @dragstart="handleDragStart($event, libro)">
+                                <b-row>
+                                    <b-col>
+                                        <b-form-group>
+                                            <b-form-input v-model="libro.titulo" type="text" placeholder="Ingrese el titulo del libro"></b-form-input>
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col>
+                                        <b-form-group >
+                                            <b-form-input v-model="libro.autor" type="text" placeholder="Ingrese el autor del libro"></b-form-input>
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col>
+                                        <b-form-group>
+                                            <b-form-input v-model="libro.genero" type="text" placeholder="Ingrese el genero del libro"></b-form-input>
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col>
+                                        <b-form-group >
+                                            <b-form-input v-model="libro.fechaPublicacion" type="date" placeholder="Ingrese la fecha de publicación del libro"></b-form-input>
+                                        </b-form-group>
+                                    </b-col>
+                                </b-row>
+                            </b-card>
+                        </b-col>
+                    </b-row>
                 </b-col>
             </b-row>
             <b-row>
@@ -109,8 +113,8 @@
                 @dragover.prevent
                 @dragenter.prevent
             >
-                <b-col cols="4" v-for="libro in libros" :key="libro.id">
-                    <b-card class="mt-2">
+                <b-col cols="4" v-for="(libro, index) in libros" :key="libro.id">
+                    <b-card class="mt-2 animate__animated animate__fadeInLeft" :class="`animate__delay-${index}s`">
                         <b-row>
                             <b-col>
                                 <div>
@@ -167,7 +171,6 @@
                             <b-form-select-option value="9">9</b-form-select-option>
                             <b-form-select-option value="12">12</b-form-select-option>
                             <b-form-select-option value="24">24</b-form-select-option>
-                            <b-form-select-option value="48">48</b-form-select-option>
                         </b-form-select>
                     </b-form-group>
                 </b-col>
@@ -192,6 +195,7 @@ export default {
         return {
             //manejadores de estado
             showSpinner: false,
+            showInsertSection: true,
 
             //paginador
             perPage: 9,
@@ -228,6 +232,7 @@ export default {
                 
                 this.libros = response.data.content;
                 this.totalRows = response.data.totalElements
+
             } catch (error) {
                 
             }
@@ -249,14 +254,14 @@ export default {
                 autor: '',
                 genero: '',
                 fechaPublicacion: ''
-            })
+            });
+            this.onscroll()
         },
 
 
         //funciones para el drag and drop
-
-        //activa el estado move y guarda el id del item que se esta moviendo
         handleDragStart(evt, item) {
+            //activa el estado move y guarda el id del item que se esta moviendo
             evt.dataTransfer.dropEffect = "move";
             evt.dataTransfer.effectAllowed = "move";
             evt.dataTransfer.setData("itemID", item.id);
@@ -285,8 +290,7 @@ export default {
                 this.spinnerHandler()
             }
         },
-        
-
+    
 
         //funciones para el crud normal
         async deleteLibro(lbro){
@@ -418,17 +422,42 @@ export default {
         //manejadores de estado
         spinnerHandler(){
             this.showSpinner = !this.showSpinner
+        },
+
+        onscroll(){
+            //obtener la posicion del scroll
+            let scroll = window.scrollY
+            //obtener la altura en pixeles del div de registro chido
+            // Calcular la posición inferior del div de registro chido
+            let registroChidoTop = document.getElementById('registro-chido').offsetTop;
+            // Obtener la altura del div de registro chido
+            let registroChidoHeight = document.getElementById('registro-chido').offsetHeight;
+            
+            let registroChidoBottom = registroChidoTop + registroChidoHeight;
+
+            //si el scroll es mayor a la posicion del div de registro chido
+            if(scroll > registroChidoBottom){
+                this.showInsertSection = false
+            }else{
+                this.showInsertSection = true
+            }
         }
     },
     mounted() {
         this.getLibros(),
-        this.getGeneros()
+        this.getGeneros(),
+        window.addEventListener('scroll', this.onscroll)
+    },
+    beforeDestroy() {
+        window.removeEventListener('scroll', this.onscroll)
     },
     watch: {
         currentPage(){
             this.getLibros()
-        }
+        },
+
     },
+
     
 }
 </script>
